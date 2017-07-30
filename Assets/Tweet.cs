@@ -8,7 +8,7 @@ public class Tweet : MonoBehaviour {
     public Text tweetText;
     public Image iconImage;
     public Sprite iconSprite;
-    public TwitterApp.Twitter.TweetData tweetData;
+    public TweetData tweetData;
     public string username
     {
         get
@@ -24,7 +24,7 @@ public class Tweet : MonoBehaviour {
         }
     }
 
-    public void Setup(TwitterApp.Twitter.TweetData tweetData)
+    public void Setup(TweetData tweetData)
     {
         this.tweetData = tweetData;
         iconSprite = Resources.Load<Sprite>("usericons/" + username);

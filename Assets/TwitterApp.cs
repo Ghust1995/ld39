@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class TwitterApp : MonoBehaviour
 {
 
+    /*
     public class Twitter
     {
         public class MyTwitterEvent : UnityEvent<TweetData> { }
@@ -40,27 +41,43 @@ public class TwitterApp : MonoBehaviour
                 tweetEvent.Invoke(newTweet);
                 allTweets.Add(newTweet);
                 nextTweet = totalTime + tweetDelay;
-                Debug.Log("next tweet " + nextTweet);
+                //Debug.Log("next tweet " + nextTweet);
             }
         }
     }
+    */
+    
+
+
+    public List<TwitterUserData> TwitterUsers;
 
     public Twitter twitter;
     public Tweet tweetPrefab;
     public GameObject tweetContainer;
+    public float minDelay, maxDelay;
     // Use this for initialization
     void Start()
     {
-        twitter = new Twitter();
+        var twitterDict = new Dictionary<string, Templates>();
+        TwitterUsers.ForEach((user) =>
+            twitterDict.Add(user.name, new Templates()
+            {
+                usefulTemplates = user.useful,
+                uselessTemplates = user.useless,
+            }));
+        twitter = new Twitter(
+            twitterDict,
+            minDelay, 
+            maxDelay);
         twitter.tweetEvent.AddListener(OnNewTweet);
     }
 
     private void Update()
     {
-        twitter.Update(Time.deltaTime, new List<PokemonInfo>());
+        twitter.Update(Time.deltaTime, FindObjectOfType<PokemongoApp>().pokemonContainer.SpawnedPokemon);
     }
 
-    void OnNewTweet(Twitter.TweetData tweetData)
+    void OnNewTweet(TweetData tweetData)
     {
         Tweet tweetGO = Instantiate(tweetPrefab, tweetContainer.transform);
         tweetGO.Setup(tweetData);

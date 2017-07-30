@@ -17,6 +17,7 @@ public class PokemongoApp : MonoBehaviour
             {
                 PokemonBag.Add(maxDistributedRarity, p);
                 maxDistributedRarity = maxDistributedRarity + RarityDistribution(p.rarity);
+                Debug.Log("Added new pokemon to bag " + maxDistributedRarity);
             });
         }
         public Map GameMap;
@@ -33,12 +34,14 @@ public class PokemongoApp : MonoBehaviour
 
         public void SpawnRandomPokemon()
         {
+            if (PokemonBag.Count == 0) return;
             var position = new Vector2(
                 Random.Range(-GameMap.CitySize / 2, +GameMap.CitySize / 2),
                 Random.Range(-GameMap.CitySize / 2, +GameMap.CitySize / 2));
             float selectedValue = Random.Range(0, maxDistributedRarity);
-            PokemonData selectedPokemon = PokemonBag.First((kvp) => kvp.Key > selectedValue).Value;
-            Debug.Log("selected pokemon " + selectedPokemon.pokemonName);
+            //Debug.Log("Selected: " + selectedValue);
+            PokemonData selectedPokemon = PokemonBag.Last((kvp) => kvp.Key < selectedValue).Value;
+            //Debug.Log("selected pokemon " + selectedPokemon.name);
             SpawnedPokemon.Add(new PokemonInfo()
             {
                 position = position,
@@ -63,16 +66,23 @@ public class PokemongoApp : MonoBehaviour
         {
             yield return new WaitForSeconds(3.0f);
             pokemonContainer.SpawnRandomPokemon();
+            //Debug.Log("spawned new pokemon");
         }
     }
 
     private void OnDrawGizmos()
     {
+        if(pokemonContainer == null) return;
         foreach (var poke in pokemonContainer.SpawnedPokemon)
         {
             Gizmos.color = poke.data.color;
-            Gizmos.DrawSphere(new Vector3(poke.position.x, poke.position.y, 0.0f), 0.1f);
-            Gizmos.DrawWireSphere
+            //Gizmos.color = Color.red;
+            //Debug.Log("showing pokemon " + poke.data.name + "  " + poke.position.x + "  " + poke.position.y + " " + poke.data.color);
+            var position1 = new Vector3(poke.position.x, poke.position.y, 0.0f);
+            Gizmos.DrawSphere(position1, 0.1f);
+            //var position2 = new Vector3(poke.position.x, poke.position.y, 0.0f);
+            //Gizmos.DrawWireSphere(position2, 0.1f);
+            //Gizmos.DrawLine(position1, position2);
         }
     }
 
