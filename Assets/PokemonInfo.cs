@@ -2,37 +2,17 @@
 
 public class PokemonInfo
 {
-    public MapInfo position;
-    public float GetDistance()
-    {
-        return 10.0f;
-    }
+    public Map.StreetCrossing mapInfo;
+    public Vector2 position;
     public PokemonData data;
 }
 
-public class PokemonData
+[CreateAssetMenu(fileName = "new pokemon", menuName = "Pokemon/New", order = 1)]
+public class PokemonData : ScriptableObject
 {
-    public string name;
+    public string pokemonName;
+    public Sprite sprite;
+    public Color color;
     public int rarity;
 }
 
-public class MapInfo
-{
-    public string streetName1;
-    public string streetName2;
-    public string nearestPOI;
-}
-
-public class MapApp
-{
-
-    public static MapInfo GetMapInfo(Vector2 position)
-    {
-        return new MapInfo()
-        {
-            streetName1 = "st1 name",
-            streetName2 = "st2 name",
-            nearestPOI = "poi"
-        };
-    }
-}
