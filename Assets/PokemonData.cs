@@ -6,6 +6,8 @@ public class PokemonData : ScriptableObject
     public Sprite sprite;
     public Color color;
     public int rarity;
+    public PokemonData Evolution;
+    public int SacrificesRequired;
 }
 
 

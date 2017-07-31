@@ -206,6 +206,7 @@ public class MapsApp : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     void Start()
     {
         map = new Map(mapsize, numStreets);
+        homeImage.rectTransform.localPosition = cityScale * home.position;
         CreateStreets(map);
     }
 
@@ -216,6 +217,8 @@ public class MapsApp : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         playerImage.rectTransform.localPosition = cityScale * player.position;
 
     }
+    public Image homeImage;
+    public House home;
 
     public int numPointerUp = 0;
     public int numPointerDown = 0;

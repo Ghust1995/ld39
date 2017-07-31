@@ -8,12 +8,19 @@ public class Cellphone : MonoBehaviour
 
     [Range(0, 1)]
     public float battery = 1.0f;
+    public bool isCharging {
+        get
+        {
+            return Vector2.Distance(FindObjectOfType<Player>().position, FindObjectOfType<House>().position) < chargeDistance;
+        }
+    }
+    public float chargeDistance;
 
     public float batteryConsumptionTuit = 1;
     public float batteryConsumptionOS = 1;
     public float batteryConsumptionMaps = 1;
     public float batteryConsumptionPokemon = 1;
-
+    public float chargeSpeed = 5;
     public Dictionary<App, float> batteryConsumption
     {
         get
@@ -24,10 +31,10 @@ public class Cellphone : MonoBehaviour
                 {App.OS, batteryConsumptionOS },
                 {App.Twitter, batteryConsumptionTuit },
                 {App.PokemonGO, batteryConsumptionPokemon },
+                {App.Off, 0 },
             };
         }
     }
-    public bool isCharging = false;
 
     [Range(0, 1)]
     public float signal = 1.0f;
@@ -42,7 +49,10 @@ public class Cellphone : MonoBehaviour
     }
     public void GoToOS()
     {
-        selectedApp = App.OS;
+        if (selectedApp != App.Off || battery > 0.1f)
+        {
+            selectedApp = App.OS;
+        }
     }
     public void GoToPokemonGO()
     {
@@ -62,6 +72,22 @@ public class Cellphone : MonoBehaviour
     void Update()
     {
         datetime = DateTime.Now;
-        battery -= batteryConsumption[selectedApp] * Time.deltaTime / 100.0f;
+        if (isCharging)
+        {
+            battery += chargeSpeed * Time.deltaTime / 100.0f;
+        }
+        else
+        {
+            battery -= batteryConsumption[selectedApp] * Time.deltaTime / 100.0f;
+        }
+        if (battery >= 1)
+        {
+            battery = 1;
+        }
+        if (battery <= 0)
+        {
+            battery = 0;
+            selectedApp = App.Off;
+        }
     }
 }

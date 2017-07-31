@@ -11,6 +11,9 @@ public class OSApp : MonoBehaviour {
     public Text time;
     public Text smalltime;
     public Image batteryFill;
+    public Image batteryBG;
+    public Sprite batteryRegularSprite;
+    public Sprite batteryChargingSprite;
     public Image signalFill;
     public Cellphone cellphone;
 
@@ -22,5 +25,7 @@ public class OSApp : MonoBehaviour {
         time.text = cellphone.datetime.ToString("HH:mm");
         smalltime.text = cellphone.datetime.ToString("HH:mm");
         date.text = cellphone.datetime.ToString("ddd, MMM dd");
-	}
+        batteryBG.sprite = cellphone.isCharging ? batteryChargingSprite : batteryRegularSprite;
+        batteryFill.sprite = cellphone.isCharging ? batteryChargingSprite : batteryRegularSprite;
+    }
 }

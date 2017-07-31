@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44931bfa0a28ac842b466658482099a5, type: 3}
-  m_Name: charmander
+  m_Name: Bestmon
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 34fd4e48ec15ebc4586aee276511bdc9, type: 3}
-  color: {r: 1, g: 0.5775862, b: 0.125, a: 0}
-  rarity: 2
+  sprite: {fileID: 21300000, guid: 7e361fe37477a854da115de5f1de89ec, type: 3}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  rarity: 0

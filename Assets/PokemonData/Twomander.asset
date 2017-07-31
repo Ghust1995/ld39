@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44931bfa0a28ac842b466658482099a5, type: 3}
+  m_Name: Twomander
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: ac6b04c37ff8ed548bceaf114149b14d, type: 3}
+  color: {r: 1, g: 0.066176474, b: 0.066176474, a: 0}
+  rarity: 4

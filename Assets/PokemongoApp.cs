@@ -16,6 +16,7 @@ public class PokemongoApp : MonoBehaviour
             maxDistributedRarity = 0.0f;
             AvailablePokemon.ForEach((p) =>
             {
+                if (p.rarity == 0) return;
                 PokemonBag.Add(maxDistributedRarity, p);
                 maxDistributedRarity = maxDistributedRarity + RarityDistribution(p.rarity);
                 //Debug.Log("Added new pokemon to bag " + maxDistributedRarity);
@@ -32,17 +33,16 @@ public class PokemongoApp : MonoBehaviour
         {
             return 1 / (value * value);
         }
-
-        bool sp = false;
+        
+        public float i = 0;
         public void SpawnRandomPokemon()
         {
-            if (sp) return;
-            sp = true;
             if (PokemonBag.Count == 0) return;
             var position = new Vector2(
                 Random.Range(-GameMap.CitySize / 2, +GameMap.CitySize / 2),
                 Random.Range(-GameMap.CitySize / 2, +GameMap.CitySize / 2));
-            position = Vector2.zero;
+            position = new Vector2(0.05f * (i % 20), 0.05f * Mathf.Floor(i/20)) + new Vector2(-0.4f, -0.4f);
+            i++;
             float selectedValue = Random.Range(0, maxDistributedRarity);
             //Debug.Log("Selected: " + selectedValue);
             PokemonData selectedPokemon = PokemonBag.Last((kvp) => kvp.Key < selectedValue).Value;
@@ -63,6 +63,7 @@ public class PokemongoApp : MonoBehaviour
     {
         pokemonContainer = new PokemonContainer(FindObjectOfType<MapsApp>().map, AvailablePokemon);
         StartCoroutine(SpawnPokemonCoroutine());
+        PopulatePokedex();
     }
 
     public float spawnDelay;
@@ -155,6 +156,17 @@ public class PokemongoApp : MonoBehaviour
         state = PokemonGOState.Overworld;
     }
 
+    public void ExitPokedex()
+    {
+        state = PokemonGOState.Overworld;
+    }
+
+    public void OpenPokedex()
+    {
+        state = PokemonGOState.Pokedex;
+    }
+
+
     [System.Serializable]
     public struct PokeGoView
     {
@@ -177,7 +189,7 @@ public class PokemongoApp : MonoBehaviour
     }
 
     public Pokeball pokeball;
-    private List<PokemonInfo> capturedPokemon = new List<PokemonInfo>();
+    public List<PokemonInfo> capturedPokemon = new List<PokemonInfo>();
     public Text CapturedText;
 
     public IEnumerator PokeballCoroutine()
@@ -204,6 +216,17 @@ public class PokemongoApp : MonoBehaviour
     public void ThrowPokeball()
     {
         StartCoroutine(PokeballCoroutine());
+    }
+
+    public PokedexItem pokedexItemPrefab;
+    public RectTransform pokedexContainer;
+    public void PopulatePokedex()
+    {
+        AvailablePokemon.ForEach((p) =>
+        {
+            PokedexItem pi = Instantiate(pokedexItemPrefab, pokedexContainer);
+            pi.Setup(p);
+        });
     }
 
     // Update is called once per frame
