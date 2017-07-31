@@ -14,3 +14,5 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 34fd4e48ec15ebc4586aee276511bdc9, type: 3}
   color: {r: 1, g: 0.5775862, b: 0.125, a: 0}
   rarity: 2
+  Evolution: {fileID: 11400000, guid: 1ee2632153b2c994e9066f538c4a6ce8, type: 2}
+  SacrificesRequired: 10
