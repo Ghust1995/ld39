@@ -44,8 +44,11 @@ public class Twitter
             TweetData newTweet;
             if (Random.Range(0, 2) == 0 && pokemonInformation.Count != 0)
             {
-                int randomNumber = Random.Range(0, pokemonInformation.Count);
-                newTweet = this.GetUsefulTweet(pokemonInformation[randomNumber], totalTime);
+                var pokemonTypes = pokemonInformation.Select((pi) => pi.data.name).Distinct().ToList();
+                var randomPoke = pokemonTypes[Random.Range(0, pokemonTypes.Count)];
+                var pokeOfType = pokemonInformation.Where((pi) => pi.data.name == randomPoke).ToList();
+                int randomNumber = Random.Range(0, pokeOfType.Count);
+                newTweet = this.GetUsefulTweet(pokeOfType[randomNumber], totalTime);
                 tweets.Add(newTweet);
                 if (Random.Range(0, 2) == 0)
                 {

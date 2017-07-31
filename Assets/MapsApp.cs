@@ -2,14 +2,12 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections;
 
 public class Map
 {
-    public struct StreetInfo
-    {
-        public float position;
-        public string name;
-    }
+
 
     public struct StreetCrossing
     {
@@ -31,10 +29,40 @@ public class Map
         var stnumy = new List<float>();
         for (int i = 0; i < numStreets; i++)
         {
-            var randomx = Random.Range(-CitySize / 2, CitySize / 2);
-            var randomy = Random.Range(-CitySize / 2, CitySize / 2);
-            stnumx.Add(randomx);
-            stnumy.Add(randomy);
+
+            for (int k = 0; k < numStreets * 100; k++)
+            {
+                var randomx = Random.Range(-CitySize / 2, CitySize / 2);
+
+                float closestDist = CitySize;
+                stnumx.ForEach((st) =>
+                {
+                    closestDist = Mathf.Min(Mathf.Abs(randomx - st), closestDist);
+                });
+//                Debug.Log(closestDist);
+
+                if (closestDist > minDist)
+                {
+                    stnumx.Add(randomx);
+                    break;
+                }
+            }
+
+            for (int k = 0; k < numStreets * 100; k++)
+            {
+                var randomy = Random.Range(-CitySize / 2, CitySize / 2);
+                float closestDist = CitySize;
+                stnumy.ForEach((st) =>
+                {
+                    closestDist = Mathf.Min(Mathf.Abs(randomy - st), closestDist);
+                });
+
+                if (closestDist > minDist)
+                {
+                    stnumy.Add(randomy);
+                    break;
+                }
+            }
         }
         stnumx.Sort();
         stnumy.Sort();
@@ -45,7 +73,8 @@ public class Map
             return new StreetInfo()
             {
                 position = snum,
-                name = string.Format("{0} street", ++j == 0 ? "main" : ((j < 0 ? "SW" : "NE") + Mathf.Abs(j).ToString())),
+                name = string.Format("{0} street", ++j == 0 ? "main" : ((j < 0 ? "SW " : "NE ") + Mathf.Abs(j).ToString())),
+                isMain = j == 0,
             };
         }).ToList();
 
@@ -55,7 +84,8 @@ public class Map
             return new StreetInfo()
             {
                 position = snum,
-                name = string.Format("{0} street", ++j == 0 ? "main" : ((j < 0 ? "NW" : "SE") + Mathf.Abs(j).ToString())),
+                name = string.Format("{0} street", ++j == 0 ? "main" : ((j < 0 ? "NW " : "SE ") + Mathf.Abs(j).ToString())),
+                isMain = j == 0,
             };
         }).ToList();
     }
@@ -82,7 +112,7 @@ public class Map
     }
 }
 
-public class MapsApp : MonoBehaviour
+public class MapsApp : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
 
 
@@ -96,6 +126,7 @@ public class MapsApp : MonoBehaviour
 
     //}
 
+        /*
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -114,9 +145,11 @@ public class MapsApp : MonoBehaviour
             //Debug.Log(st.name);
         }
     }
+    */
 
-    public Image streetImage;
+    public Street streetImage;
     public RectTransform mapContainer;
+    public RectTransform streetsContainer;
     public ScrollRect scrollRect;
     public float streetWidth;
     public float cityScale = 200.0f;
@@ -125,27 +158,21 @@ public class MapsApp : MonoBehaviour
     public float maxZoom = 0.3f;
     public void ZoomIn()
     {
-        mapContainer.localScale += Vector3.one * deltaZoom;
-        if (mapContainer.localScale.x > minZoom)
+        streetsContainer.localScale += Vector3.one * deltaZoom;
+        if (streetsContainer.localScale.x > minZoom)
         {
-            mapContainer.localScale = Vector3.one * minZoom;
+            streetsContainer.localScale = Vector3.one * minZoom;
         }
+        mapContainer.sizeDelta = streetsContainer.localScale.x * cityScale * new Vector2(map.CitySize, map.CitySize);
     }
     public void ZoomOut()
     {
-        mapContainer.localScale -= Vector3.one * deltaZoom;
-        if (mapContainer.localScale.x < maxZoom)
+        streetsContainer.localScale -= Vector3.one * deltaZoom;
+        if (streetsContainer.localScale.x < maxZoom)
         {
-            mapContainer.localScale = Vector3.one * maxZoom;
+            streetsContainer.localScale = Vector3.one * maxZoom;
         }
-    }
-    public void Recenter()
-    {
-        Canvas.ForceUpdateCanvases();
-
-        mapContainer.anchoredPosition =
-            (Vector2)scrollRect.transform.InverseTransformPoint(mapContainer.position)
-            - (Vector2)scrollRect.transform.InverseTransformPoint(player.position);
+        mapContainer.sizeDelta = streetsContainer.localScale.x * cityScale * new Vector2(map.CitySize, map.CitySize);
     }
 
     public void CreateStreets(Map map)
@@ -154,18 +181,23 @@ public class MapsApp : MonoBehaviour
         foreach (var st in map.StreetsX)
         {
             var posy = st.position;
-            Image newStreet = Instantiate(streetImage, mapContainer.transform);
+            Street newStreet = Instantiate(streetImage, streetsContainer.transform);
+            newStreet.Setup(st);
             newStreet.rectTransform.localPosition = cityScale * new Vector3(0.0f, posy, 0.0f);
-            newStreet.rectTransform.sizeDelta = cityScale * new Vector2(map.CitySize, streetWidth);
+            newStreet.rectTransform.sizeDelta = cityScale * new Vector2(map.CitySize, streetWidth * 1.5f);
             newStreet.transform.SetSiblingIndex(0);
+            newStreet.image.color = newStreet.streetInfo.isMain ? Color.yellow : Color.white;
         }
         foreach (var st in map.StreetsY)
         {
             var posx = st.position;
-            Image newStreet = Instantiate(streetImage, mapContainer.transform);
+            Street newStreet = Instantiate(streetImage, streetsContainer.transform);
+            newStreet.Setup(st);
             newStreet.rectTransform.localPosition = cityScale * new Vector3(posx, 0.0f, 0.0f);
-            newStreet.rectTransform.sizeDelta = cityScale * new Vector2(streetWidth, map.CitySize);
+            newStreet.rectTransform.sizeDelta = cityScale * new Vector2(map.CitySize, streetWidth * 1.5f);
+            newStreet.rectTransform.Rotate(Vector3.forward, 90);
             newStreet.transform.SetSiblingIndex(0);
+            newStreet.image.color = newStreet.streetInfo.isMain ? Color.yellow : Color.white;
         }
 
     }
@@ -182,6 +214,48 @@ public class MapsApp : MonoBehaviour
     private void Update()
     {
         playerImage.rectTransform.localPosition = cityScale * player.position;
-        
+
     }
+
+    public int numPointerUp = 0;
+    public int numPointerDown = 0;
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        numPointerUp++;
+        //StartCoroutine(
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        numPointerDown++;
+        Vector2 localCursor;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(mapContainer, eventData.position, eventData.pressEventCamera, out localCursor);
+        StartCoroutine(CheckMouseHold(numPointerDown, localCursor));
+    }
+
+    public float timeToHold;
+    public IEnumerator CheckMouseHold(int mouseClicks, Vector2 mousePosition)
+    {
+        yield return new WaitForSeconds(timeToHold);
+        if (numPointerDown > numPointerUp && mouseClicks == numPointerDown)
+        {
+            mapPin.gameObject.SetActive(true);
+            Debug.Log("lolo " + mouseClicks + " " + mousePosition);
+            mapPin.rectTransform.localPosition = mousePosition;
+            moveToPanel.gameObject.SetActive(true);
+        }
+    }
+
+    public Image mapPin;
+    public RectTransform moveToPanel;
+
+    public void MovePlayer()
+    {
+        player.MoveTowards(mapPin.rectTransform.localPosition / cityScale, () =>
+          {
+              mapPin.gameObject.SetActive(false);
+          });
+        moveToPanel.gameObject.SetActive(false);
+    }
+
 }

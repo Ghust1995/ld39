@@ -1,20 +1,20 @@
 fileFormatVersion: 2
-guid: 3be2fa8b490afc646a495f4f50abbde0
-timeCreated: 1501397792
+guid: ca7f2d4a24eef944c9614a69aad4cea0
+timeCreated: 1501427693
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
-  fontSize: 16
+  fontSize: 500
   forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Untitled2
+  fontName: mut
   fontNames:
-  - Untitled2
+  - mut
   fallbackFontReferences: []
   customCharacters: 
-  fontRenderingMode: 0
+  fontRenderingMode: 1
   ascentCalculationMode: 1
   userData: 
   assetBundleName: 

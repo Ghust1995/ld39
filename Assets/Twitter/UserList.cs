@@ -20,13 +20,13 @@ public class UserList
             User newUser = new User(entry.Key, entry.Value.usefulTemplates, entry.Value.uselessTemplates);
             if (entry.Value.uselessTemplates.Count != 0)
             {
-                Debug.Log("added new useless user " + newUser.username);
+                //Debug.Log("added new useless user " + newUser.username);
                 useless.Add(newUser);
             }
 
             if (entry.Value.usefulTemplates.Count != 0)
             {
-                Debug.Log("added new useful user " + newUser.username);
+                //Debug.Log("added new useful user " + newUser.username);
                 useful.Add(newUser);
             }
         }
@@ -39,8 +39,6 @@ public class UserList
     public TweetData randomUselessTweet(float time)
     {
         var sel = Random.Range(0, useless.Count);
-        Debug.Log("count " + useless.Count);
-        Debug.Log("sel " + sel);
         return useless[sel].uselessTweet(time);
     }
 
