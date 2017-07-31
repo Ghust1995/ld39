@@ -82,5 +82,9 @@ public class TwitterApp : MonoBehaviour
         Tweet tweetGO = Instantiate(tweetPrefab, tweetContainer.transform);
         tweetGO.Setup(tweetData);
         tweetGO.transform.SetSiblingIndex(0);
+        if (FindObjectOfType<Cellphone>().selectedApp == App.Twitter)
+        {
+            FindObjectOfType<SfxManager>().PlayTweet();
+        }
     }
 }

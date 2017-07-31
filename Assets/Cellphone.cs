@@ -14,6 +14,7 @@ public class Cellphone : MonoBehaviour
             return Vector2.Distance(FindObjectOfType<Player>().position, FindObjectOfType<House>().position) < chargeDistance;
         }
     }
+    public bool wasCharging = false;
     public float chargeDistance;
 
     public float batteryConsumptionTuit = 1;
@@ -45,10 +46,12 @@ public class Cellphone : MonoBehaviour
 
     public void GoToTwitter()
     {
+            musicPlayer.Pause();
         selectedApp = App.Twitter;
     }
     public void GoToOS()
     {
+            musicPlayer.Pause();
         if (selectedApp != App.Off || battery > 0.1f)
         {
             selectedApp = App.OS;
@@ -57,9 +60,11 @@ public class Cellphone : MonoBehaviour
     public void GoToPokemonGO()
     {
         selectedApp = App.PokemonGO;
+        musicPlayer.Play();
     }
     public void GoToMaps()
     {
+            musicPlayer.Pause();
         selectedApp = App.Maps;
     }
 
@@ -67,6 +72,7 @@ public class Cellphone : MonoBehaviour
     void Start()
     {
     }
+    public AudioSource musicPlayer;
 
     // Update is called once per frame
     void Update()
@@ -74,6 +80,10 @@ public class Cellphone : MonoBehaviour
         datetime = DateTime.Now;
         if (isCharging)
         {
+            if (!wasCharging)
+            {
+                FindObjectOfType<SfxManager>().PlayCharging();
+            }
             battery += chargeSpeed * Time.deltaTime / 100.0f;
         }
         else
@@ -87,7 +97,10 @@ public class Cellphone : MonoBehaviour
         if (battery <= 0)
         {
             battery = 0;
+            musicPlayer.Pause();
             selectedApp = App.Off;
         }
+
+        wasCharging = isCharging;
     }
 }

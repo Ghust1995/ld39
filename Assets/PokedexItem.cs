@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public class PokedexItem : MonoBehaviour {
     public Text count;
@@ -13,7 +14,7 @@ public class PokedexItem : MonoBehaviour {
 
     public PokemonData pokedata;
 
-    public void Setup(PokemonData data)
+    public void Setup(PokemonData data, Func<bool> evolvePokemon)
     {
         pokedata = data;
         image.sprite = pokedata.sprite;
@@ -23,9 +24,22 @@ public class PokedexItem : MonoBehaviour {
         }
         else
         {
-            SacrificeText.text = "Evolve!";
-            //Sacrifice.onClick;
+            SacrificeText.text = "evolve!";
+            Sacrifice.onClick.AddListener(() =>
+            {
+                if (!evolvePokemon())
+                {
+                    StartCoroutine(ShowNecessarySacrifice());
+                }
+            });
         }
+    }
+
+    IEnumerator ShowNecessarySacrifice()
+    {
+            SacrificeText.text = pokedata.SacrificesRequired + " required";
+        yield return new WaitForSeconds(3.0f);
+            SacrificeText.text = "evolve!";
     }
 	
 	// Update is called once per frame

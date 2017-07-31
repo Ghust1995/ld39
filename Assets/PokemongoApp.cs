@@ -34,25 +34,27 @@ public class PokemongoApp : MonoBehaviour
             return 1 / (value * value);
         }
         
-        public float i = 0;
-        public void SpawnRandomPokemon()
+        //public float i = 0;
+        public PokemonInfo SpawnRandomPokemon()
         {
-            if (PokemonBag.Count == 0) return;
+            if (PokemonBag.Count == 0) return null;
             var position = new Vector2(
                 Random.Range(-GameMap.CitySize / 2, +GameMap.CitySize / 2),
                 Random.Range(-GameMap.CitySize / 2, +GameMap.CitySize / 2));
-            position = new Vector2(0.05f * (i % 20), 0.05f * Mathf.Floor(i/20)) + new Vector2(-0.4f, -0.4f);
-            i++;
+            //position = new Vector2(0.05f * (i % 20), 0.05f * Mathf.Floor(i/20)) + new Vector2(-0.3f, -0.3f);
+            //i++;
             float selectedValue = Random.Range(0, maxDistributedRarity);
             //Debug.Log("Selected: " + selectedValue);
             PokemonData selectedPokemon = PokemonBag.Last((kvp) => kvp.Key < selectedValue).Value;
             //Debug.Log("selected pokemon " + selectedPokemon.name);
-            SpawnedPokemon.Add(new PokemonInfo()
+            var newPoke = new PokemonInfo()
             {
                 position = position,
                 mapInfo = GameMap.GetNearestCrossing(position),
                 data = selectedPokemon,
-            });
+            };
+            SpawnedPokemon.Add(newPoke);
+            return newPoke;
         }
     }
 
@@ -64,15 +66,34 @@ public class PokemongoApp : MonoBehaviour
         pokemonContainer = new PokemonContainer(FindObjectOfType<MapsApp>().map, AvailablePokemon);
         StartCoroutine(SpawnPokemonCoroutine());
         PopulatePokedex();
+        for (int i = 0; i < InitialPokemon; i++)
+        {
+            var newPoke = pokemonContainer.SpawnRandomPokemon();
+            StartCoroutine(DespawnPokemon(newPoke));
+
+        }
+    }
+
+    public float DespawnTime;
+    public IEnumerator DespawnPokemon(PokemonInfo poke)
+    {
+        yield return new WaitForSeconds(DespawnTime);
+        if (pokemonContainer.SpawnedPokemon.Contains(poke))
+        {
+            pokemonContainer.SpawnedPokemon.Remove(poke);
+        }
     }
 
     public float spawnDelay;
+    public int MaxPokemon = 10;
     IEnumerator SpawnPokemonCoroutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(spawnDelay);
-            pokemonContainer.SpawnRandomPokemon();
+            if (pokemonContainer.SpawnedPokemon.Count > MaxPokemon) continue;
+            var newPoke = pokemonContainer.SpawnRandomPokemon();
+            StartCoroutine(DespawnPokemon(newPoke));
             //Debug.Log("spawned new pokemon");
         }
     }
@@ -114,6 +135,10 @@ public class PokemongoApp : MonoBehaviour
             else
             {
                 poke.rectTransform.position = visibilityScale * (poke.pokemonInfo.position - player.position);
+            }
+            if (!pokemonContainer.SpawnedPokemon.Contains(poke.pokemonInfo))
+            {
+                children.Add(child.gameObject);
             }
             if (poke.pokemonInfo.isCaptured)
             {
@@ -191,6 +216,7 @@ public class PokemongoApp : MonoBehaviour
     public Pokeball pokeball;
     public List<PokemonInfo> capturedPokemon = new List<PokemonInfo>();
     public Text CapturedText;
+    public int pokemonCount = 0;
 
     public IEnumerator PokeballCoroutine()
     {
@@ -199,11 +225,12 @@ public class PokemongoApp : MonoBehaviour
         yield return pokeball.PokeballAnimationCatch(battlePokemonImage.rectTransform.position.y);
         battlePokemonImage.enabled = false;
         yield return pokeball.PokeballAnimationWobble();
-        if (Random.value > 0.5f)
+        if (Random.value < 1/Mathf.Sqrt(battlePokemon.data.rarity))
         {
+            FindObjectOfType<SfxManager>().PlayCapture();
             capturedPokemon.Add(battlePokemon);
             CapturedText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(4.5f);
             CapturedText.gameObject.SetActive(false);
             state = PokemonGOState.Overworld;
             battlePokemon.isCaptured = true;
@@ -225,9 +252,30 @@ public class PokemongoApp : MonoBehaviour
         AvailablePokemon.ForEach((p) =>
         {
             PokedexItem pi = Instantiate(pokedexItemPrefab, pokedexContainer);
-            pi.Setup(p);
+            pi.Setup(p, () =>
+            {
+                if (capturedPokemon.Count((cp) => cp.data.name == p.name) >= p.SacrificesRequired)
+                {
+                    int i = 0;
+                    capturedPokemon.RemoveAll((cp) =>
+                    {
+                        return cp.data.name == p.name && i++ < cp.data.SacrificesRequired;
+                    });
+
+                    capturedPokemon.Add(new PokemonInfo()
+                    {
+                        data = p.Evolution,
+                        isCaptured = true,
+                        isVisible = false,
+                    });
+                    FindObjectOfType<SfxManager>().PlayEvolution();
+                    return true;
+                }
+                return false;
+            });
         });
     }
+    public int InitialPokemon;
 
     // Update is called once per frame
     void Update()
@@ -239,5 +287,7 @@ public class PokemongoApp : MonoBehaviour
         // Remove
         pokemonContainer.GameMap = FindObjectOfType<MapsApp>().map;
         UpdatePokemonDisplay();
+        pokemonCount = pokemonContainer.SpawnedPokemon.Count;
+        
     }
 }
