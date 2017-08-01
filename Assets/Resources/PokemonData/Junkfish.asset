@@ -9,10 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44931bfa0a28ac842b466658482099a5, type: 3}
-  m_Name: Starter
+  m_Name: Junkfish
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 34fd4e48ec15ebc4586aee276511bdc9, type: 3}
-  color: {r: 1, g: 0.5775862, b: 0.125, a: 0}
-  rarity: 2
-  Evolution: {fileID: 11400000, guid: 1ee2632153b2c994e9066f538c4a6ce8, type: 2}
-  SacrificesRequired: 10
+  sprite: {fileID: 21300000, guid: 5a748855719573f49b9b996da43a79d8, type: 3}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  rarity: 1
+  Evolution: {fileID: 11400000, guid: 78643a75b94e82d45a570827f7944f0c, type: 2}
+  SacrificesRequired: 100

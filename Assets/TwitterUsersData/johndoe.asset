@@ -9,10 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cce607c8807da942aab5281f959dab0, type: 3}
-  m_Name: kakaka
+  m_Name: johndoe
   m_EditorClassIdentifier: 
-  useful: []
+  useful:
+  - OMG! I was walking at {1} and {2} and found a {0}
+  - Holy moly, just passed by a {0} near {1} and {2}
   useless:
-  - 
-  - 
-  - 
+  - This game is so good, I wish I could make art like this.
+  - This game sound is amazing!
+  - I wanna play this forever!

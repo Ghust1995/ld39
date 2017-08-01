@@ -70,7 +70,6 @@ public class PokemongoApp : MonoBehaviour
         {
             var newPoke = pokemonContainer.SpawnRandomPokemon();
             StartCoroutine(DespawnPokemon(newPoke));
-
         }
     }
 

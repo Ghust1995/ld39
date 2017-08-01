@@ -5154,7 +5154,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1ee2632153b2c994e9066f538c4a6ce8, type: 2}
   - {fileID: 11400000, guid: de9a2129ee7d12248a6d75c0f237d308, type: 2}
   - {fileID: 11400000, guid: 48883e05783ae2b458840fd568278f77, type: 2}
-  - {fileID: 11400000, guid: ca60b4646c5d9d54cb1633a995e5ec20, type: 2}
+  - {fileID: 11400000, guid: 6a9937b24e87e8d4a842ebd9e64623c9, type: 2}
   - {fileID: 11400000, guid: 36ae52cc9cf46ec489e73dd3202ef9c8, type: 2}
   - {fileID: 11400000, guid: 78643a75b94e82d45a570827f7944f0c, type: 2}
   - {fileID: 11400000, guid: 40ceb0ace954b9e4ea8de969e953f88e, type: 2}
@@ -5680,11 +5680,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6b34592c2154e5942a9421897173a9dc, type: 2}
   - {fileID: 11400000, guid: 8d1fe2f715763364bab4e30fa617f197, type: 2}
   - {fileID: 11400000, guid: edca51a3b035e4a4ab0bad78ef19e9c1, type: 2}
+  - {fileID: 11400000, guid: 25b1e4d000f547b4a82e26ea0b6a963c, type: 2}
+  - {fileID: 11400000, guid: 335b331a19c2be4499106fb87b24dc7b, type: 2}
   tweetPrefab: {fileID: 114369483802717934, guid: 6460d4e846e99a94288aee371c41b4ac,
     type: 2}
   tweetContainer: {fileID: 174400101}
-  minDelay: 5
-  maxDelay: 10
+  minDelay: 3
+  maxDelay: 6
 --- !u!4 &1421090781
 Transform:
   m_ObjectHideFlags: 0
@@ -6047,7 +6049,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e4c425f8ce36af94aae142a9fe8998d2, type: 3}
   - {fileID: 21300000, guid: d488588e8ef4dd841acbb56a00799259, type: 3}
   - {fileID: 21300000, guid: f1aa5195c86ff014193f2e9efc08934e, type: 3}
-  numBuildings: 100
+  numBuildings: 200
   player: {fileID: 665372700}
   playerImage: {fileID: 430425650}
   homeImage: {fileID: 1119128850}

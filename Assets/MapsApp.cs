@@ -16,11 +16,12 @@ public class Map
     }
     public List<StreetInfo> StreetsX = new List<StreetInfo>();
     public List<StreetInfo> StreetsY = new List<StreetInfo>();
+    public List<Vector2> buildings = new List<Vector2>();
 
     public int NumStreets;
     public float CitySize;
 
-    public Map(float size, int numStreets)
+    public Map(float size, int numStreets, int numBuildings)
     {
         CitySize = size;
         NumStreets = numStreets;
@@ -88,6 +89,41 @@ public class Map
                 isMain = j == 0,
             };
         }).ToList();
+
+        for (int i = 0; i < numBuildings; i++)
+        {
+            int k = 0;
+            while (k < 10000)
+            {
+                var pos = new Vector2(Random.Range(-CitySize / 2, CitySize / 2), Random.Range(-CitySize / 2, CitySize / 2));
+                bool farEnough = true;
+                foreach (var st in StreetsX)
+                {
+                    if (Mathf.Abs(pos.y - st.position) < minDist/2)
+                    {
+                        farEnough = false;
+                        break;
+                    }
+                }
+                if (farEnough)
+                {
+                    foreach (var st in StreetsY)
+                    {
+                        if (Mathf.Abs(pos.x - st.position) < minDist/2)
+                        {
+                            farEnough = false;
+                            break;
+                        }
+                    }
+                }
+                if (farEnough)
+                {
+                    buildings.Add(pos);
+                    break;
+                }
+                k++;
+            }
+        }
     }
 
     public StreetCrossing GetNearestCrossing(Vector2 position)
@@ -156,6 +192,9 @@ public class MapsApp : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public float deltaZoom = 0.1f;
     public float minZoom = 1.0f;
     public float maxZoom = 0.3f;
+
+    public Image GenericHousePrefab;
+    public List<Sprite> GenericHouseOptions;
     public void ZoomIn()
     {
         streetsContainer.localScale += Vector3.one * deltaZoom;
@@ -200,12 +239,21 @@ public class MapsApp : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             newStreet.image.color = newStreet.streetInfo.isMain ? Color.yellow : Color.white;
         }
 
+        // CreateBuildings
+        foreach (var b in map.buildings)
+        {
+            Image newBuilding = Instantiate(GenericHousePrefab, streetsContainer.transform);
+            newBuilding.rectTransform.localPosition = cityScale * b;
+            newBuilding.sprite = GenericHouseOptions[Random.Range(0, GenericHouseOptions.Count)];
+        }
+
     }
 
+    public int numBuildings;
     // Update is called once per frame
     void Start()
     {
-        map = new Map(mapsize, numStreets);
+        map = new Map(mapsize, numStreets, numBuildings);
         homeImage.rectTransform.localPosition = cityScale * home.position;
         CreateStreets(map);
     }

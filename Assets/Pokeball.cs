@@ -63,8 +63,8 @@ public class Pokeball : MonoBehaviour
     {
         {
             var totalTime = 0.0f;
-            var initY = transform.position.y;
-            var initX = transform.position.x;
+//            var initY = transform.position.y;
+ //           var initX = transform.position.x;
             image.sprite = Energy;
             while (totalTime < EnergyTime)
             {

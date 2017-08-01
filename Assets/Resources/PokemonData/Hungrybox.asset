@@ -9,8 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44931bfa0a28ac842b466658482099a5, type: 3}
-  m_Name: Palyndrome
+  m_Name: Hungrybox
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 5d80742d9f66f3f48bb8c45dc6c12f68, type: 3}
+  sprite: {fileID: 21300000, guid: 79eccda1ee63e26499dd1fb2655e195d, type: 3}
   color: {r: 0, g: 0, b: 0, a: 0}
-  rarity: 5
+  rarity: 3
+  Evolution: {fileID: 0}
+  SacrificesRequired: 0

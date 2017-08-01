@@ -42,7 +42,7 @@ public class Twitter
         {
             //Random random = new Random();
             TweetData newTweet;
-            if (Random.Range(0, 2) == 0 && pokemonInformation.Count != 0)
+            if (Random.value < 0.2f && pokemonInformation.Count != 0)
             {
                 var pokemonTypes = pokemonInformation.Select((pi) => pi.data.name).Distinct().ToList();
                 var randomPoke = pokemonTypes[Random.Range(0, pokemonTypes.Count)];
